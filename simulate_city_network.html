@@ -1649,7 +1649,7 @@ distribution of the observed network. We produce a N by N matrix of tie
 weights corresponding to <span class="math inline">\(d_i * d_j\)</span>
 where <span class="math inline">\(d\)</span> is the observed degree.</p>
 <pre class="r"><code>if(F){
-#produce network basis with approximate degree distribution
+#produce network basis with approximate degree distribution 
 dg&lt;-data.frame(table(unlist(eldemog2[which(eldemog2$mode%in%mode),1:2])))
 demogt&lt;-merge(demog,dg,by.x=&quot;Person.Id&quot;,by.y=&quot;Var1&quot;,all=T)
 demogs&lt;-demogt[sample(1:nrow(demogt),N,replace=T),] #sample nodes
@@ -1672,8 +1672,8 @@ distribution, and geometrically-weighted edgewise shared partner
 distribution. These statsitics can all be drawn from an egocentric
 sample of nodes from a larger network.</p>
 <pre class="r"><code>if(F){
-#calculate number of triangles among your sample
-el_obs&lt;-eldemog2[which(eldemog2$mode%in%mode),c(1:2)]
+#calculate number of triangles among your sample 
+el_obs&lt;-eldemog2[which(eldemog2$mode%in%mode),c(1:2)] 
 egoids&lt;-demogs$Person.Id#[which(demogs$Freq&gt;0)]
 esps&lt;-mclapply(egoids,function(id1){
   subnetegos&lt;-unique(unlist(el_obs[which(el_obs[,1]%in%id1 | el_obs[,2]%in%id1 ),c(1,2)])) #get IDs of all alters of id1
@@ -1685,23 +1685,23 @@ esps&lt;-mclapply(egoids,function(id1){
     triangles&lt;-nrow(subnet_alters)
     return(list(esp,triangles))
   }
-
+  
 },mc.cores=ncores)
-espdist&lt;-table(unlist(lapply(esps,function(x) x[[1]])))/2 #edgewise shared partners
-tris&lt;-sum(unlist(lapply(esps,function(x) x[[2]]))) #sum triangles for all nodes
+espdist&lt;-table(unlist(lapply(esps,function(x) x[[1]])))/2 #edgewise shared partners 
+tris&lt;-sum(unlist(lapply(esps,function(x) x[[2]]))) #sum triangles for all nodes 
 tris&lt;-tris/3 #triangles are counted three times
 
 form&lt;-net2~ #name of the basis network
   triangles
 
-target_stats&lt;-summary(form) #initialize target statistic vector in ergm format
+target_stats&lt;-summary(form) #initialize target statistic vector in ergm format 
 target_stats[1]&lt;-tris #replace target statistic with observed statistic
 }</code></pre>
 <p>These statistics in-hand, we’ll utilize simulated annealing (san) to
 build a network with the same number of triangles in the observed
 network while holding the degree distribution constant.</p>
 <pre class="r"><code>if(F){
-for (i in 1:10){ #run san ten times
+for (i in 1:10){ #run san ten times 
   newnet&lt;-san(form,target.stats=target_stats,
               only.last = T,
               constraints= ~ edges + degreedist,
@@ -1720,9 +1720,9 @@ of statistics san focuses on for optimization. Here, we only optimize on
 triangles and determine whether it is ‘good enough’ to approximate the
 shared partner distribution.</p>
 <pre class="r"><code>if(F){
-#evaluate all other aspects of the network
+#evaluate all other aspects of the network 
 finform&lt;-net2~ #name of the basis network
-  edges+ #total # edges in the network
+  edges+ #total # edges in the network 
   degree(0:max(demogs$Freq)) + #degree distribution from degree 0 to max
   mm(&quot;agecat&quot;) + #age mixing matrix (matrix sums to &#39;edges&#39;)
   mm(&quot;Gender&quot;) + #gender mixing matrix (matrix sums to &#39;edges&#39;)
